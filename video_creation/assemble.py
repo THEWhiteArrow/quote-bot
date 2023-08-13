@@ -27,8 +27,8 @@ def assemble_video(video_subclip_filename:str,audio_subclip_filename:str,tts_fil
     for i, word in enumerate(words):
         text_q = TextClip(word, fontsize=20, color=colors[R(0,len(colors)-1)], size=final_clip.size)
 
-        text_q = text_q.set_duration(word_duration).set_pos("center").set_opacity(0.86).set_start(i*word_duration)
-        final_clip = CompositeVideoClip([final_clip, text_q])
+        # text_q = text_q.set_duration(word_duration).set_pos("center").set_opacity(0.86).set_start(i*word_duration)
+        # final_clip = CompositeVideoClip([final_clip, text_q])
 
 
     if not os.path.exists("results"):
