@@ -1,3 +1,29 @@
 [quotes]
 min_length = 75
 max_length = 100
+
+[app]
+status="dev"
+
+
+[background]
+video_url="https://www.youtube.com/watch?v=gUOg-9d2WAw"
+video_name="eart"
+video_credit="earther"
+audio_url="https://youtu.be/xFnvAsKJp4E"
+audio_name="sigma"
+audio_credit="sigmer"
+
+[settings.tts]
+voice_choice = "tiktok"
+random_voice = true
+elevenlabs_voice_name = "Bella"
+elevenlabs_api_key = ""
+aws_polly_voice = "Matthew"
+streamlabs_polly_voice = "Matthew"
+tiktok_voice = "en_us_001"
+tiktok_sessionid = "1701976d9c167b77d09ab5a7fe0e09c7"
+python_voice = "1"
+py_voice_num = "2"
+silence_duration = 0.3
+no_emojis = false
