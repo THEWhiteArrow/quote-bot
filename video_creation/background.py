@@ -17,13 +17,11 @@ def download_background_video():
     video_name = config["background"]["video_name"]
     video_credit = config["background"]["video_credit"]
 
-
+ 
     # check if file exists
     if os.path.exists(f"assets/background/video/{video_credit}-{video_name}.mp4"):
         print("Background video already exists!")
         return
-    if not os.path.exists("assets/background/video"):
-        os.mkdir("assets/background/video")
     
     print("Downloading background video...")
     ydl_opts = {
@@ -40,8 +38,7 @@ def download_background_audio():
     audio_url = config["background"]["audio_url"]
     audio_name = config["background"]["audio_name"]
     audio_credit = config["background"]["audio_credit"]
-    
- 
+     
     # check if file exists
     if os.path.exists(f"assets/background/audio/{audio_credit}-{audio_name}.mp3"):
         print("Background audio already exists!")
@@ -80,20 +77,19 @@ def get_video_subclip(length:int=10, id:str=time()):
     filename = f"temp/video-subclip-{id}.mp4"
     subclip.write_videofile(filename, fps=24)
 
-    print("Created subclip!")
+    print("Created video subclip!")
 
     return filename
-
-
-def get_audio_subclip(duration:int=10, id:str=time()):
+ 
+def get_audio_subclip(length:int=10, id:str=time()):
     # load bg audio
     audio_name = config["background"]["audio_name"]
     audio_credit = config["background"]["audio_credit"]
     audio = AudioFileClip(f"assets/background/audio/{audio_credit}-{audio_name}.mp3")
     # make a subclip of it with length
     
-    start=R(0, audio.duration - duration)
-    end=start+duration
+    start=R(0, audio.duration - length)
+    end=start+length
     subclip = audio.subclip(start, end)
     # save it
 
@@ -102,9 +98,10 @@ def get_audio_subclip(duration:int=10, id:str=time()):
         os.mkdir("temp")
 
     filename = f"temp/audio-subclip-{id}.mp3"
-    subclip.write_audiofile(filename, fps=24)
+    
+    subclip.write_audiofile(filename)
 
-    print("Created subclip!")
+    print("Created audio subclip!")
 
     return filename
  

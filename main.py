@@ -1,3 +1,4 @@
+import shutil
 from moviepy.editor import *
 from gtts import gTTS as gtts
 from quotes.quotes_wrapper import get_quotes
@@ -26,41 +27,41 @@ def prepare_toml():
     if not exists_toml("./config.toml"):
         create_toml_config()
 
+def main():
+    prepare_toml()
+
+    download_background_video()
+    download_background_audio()
+
+    quotes = get_quotes()  
+    
+    tts = TikTok()
+    for q in quotes:
+        id=q.timestamp
+        quote=q.quote
+        tts_filename=f"temp/tts-{id}.mp3"
+
+        if not os.path.exists("temp"):
+            os.mkdir("temp")
+            
+        tts.run(quote, tts_filename, random_voice=config["settings"]["tts"]["random_voice"])
+        duration = AudioFileClip(tts_filename).duration
+        video_subclip_filename=get_video_subclip(duration,id)
+        audio_subclip_filename=get_audio_subclip(duration,id)
+
+        assemble_video(video_subclip_filename,audio_subclip_filename,tts_filename,quote,id)
+
+    # remove temp folder
+    if os.path.exists("temp"):
+        shutil.rmtree("temp")
+
+
+
 
 if __name__ == "__main__": 
-    # prepare_toml()
-    # quotes = get_quotes()  
+    main()
+
+ 
+
     
-    # tts = TikTok()
-    # for q in quotes:
-    #     id=q.timestamp
-    #     quote=q.quote
-    #     tts_filename=f"temp/tts-{id}.mp3"
-
-    #     if not os.path.exists("temp"):
-    #         os.mkdir("temp")
-            
-    #     tts.run(quote, tts_filename)
-    #     duration = AudioFileClip(tts_filename).duration
-    #     video_subclip_filename=get_video_subclip(duration,id)
-    #     audio_subclip_filename=get_audio_subclip(duration,id)
-
-    #     #   assemble_video()
-    #     assemble_video(video_subclip_filename,audio_subclip_filename,tts_filename,quote,id)
-
-
-    # assemble_video(
-    #     "temp/video-subclip-1691932240.mp4",
-    #     "temp/audio-subclip-1691932240.mp3",
-    #     "temp/tts-1691932240.mp3",
-    #     "Hello world text to speech",
-    #     1691932240
-    # )
-    assemble_video(
-        "assets/background/video/demo.mp4",
-        "assets/background/audio/demo.mp3",
-        "assets/background/audio/demo1.mp3",
-        "Hello world text to speech",
-        1691932240
-    )
 

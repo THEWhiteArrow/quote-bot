@@ -18,7 +18,7 @@ def get_quotes():
     
  
     if config["app"]["status"] == "dev":
-        quotes = [Quote("Hello World text to speech", "Unknown",1691932240)]
+        quotes = [Quote("The best way to predict the future is to create it.", "Abraham Lincoln",1691932241)]
     else:
         quotes = get_zenquotes(config["quotes"]["min_length"], config["quotes"]["max_length"])
     
