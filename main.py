@@ -28,26 +28,39 @@ def prepare_toml():
 
 
 if __name__ == "__main__": 
-    prepare_toml()
-    quotes = get_quotes()
-    download_background_video()
-    download_background_audio()
- 
+    # prepare_toml()
+    # quotes = get_quotes()  
     
-    
-    tts = TikTok()
-    for q in quotes:
-        tts_filename="temp/tts-{q.timestamp}.mp3"
-        quote=q.quote
-        tts.run(quote, tts_filename)
-        duration = AudioFileClip(tts_filename).duration
-        video_subclip_filename=get_video_subclip(duration,id=q.timestamp)
-        audio_subclip_filename=get_audio_subclip(duration,id=q.timestamp)
+    # tts = TikTok()
+    # for q in quotes:
+    #     id=q.timestamp
+    #     quote=q.quote
+    #     tts_filename=f"temp/tts-{id}.mp3"
 
-        #   assemble_video()
-        assemble_video(video_subclip_filename,audio_subclip_filename,tts_filename,quote)
+    #     if not os.path.exists("temp"):
+    #         os.mkdir("temp")
+            
+    #     tts.run(quote, tts_filename)
+    #     duration = AudioFileClip(tts_filename).duration
+    #     video_subclip_filename=get_video_subclip(duration,id)
+    #     audio_subclip_filename=get_audio_subclip(duration,id)
+
+    #     #   assemble_video()
+    #     assemble_video(video_subclip_filename,audio_subclip_filename,tts_filename,quote,id)
 
 
-
-
+    # assemble_video(
+    #     "temp/video-subclip-1691932240.mp4",
+    #     "temp/audio-subclip-1691932240.mp3",
+    #     "temp/tts-1691932240.mp3",
+    #     "Hello world text to speech",
+    #     1691932240
+    # )
+    assemble_video(
+        "assets/background/video/demo.mp4",
+        "assets/background/audio/demo.mp3",
+        "assets/background/audio/demo1.mp3",
+        "Hello world text to speech",
+        1691932240
+    )
 

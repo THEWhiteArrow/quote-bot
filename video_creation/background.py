@@ -22,6 +22,8 @@ def download_background_video():
     if os.path.exists(f"assets/background/video/{video_credit}-{video_name}.mp4"):
         print("Background video already exists!")
         return
+    if not os.path.exists("assets/background/video"):
+        os.mkdir("assets/background/video")
     
     print("Downloading background video...")
     ydl_opts = {
@@ -38,8 +40,8 @@ def download_background_audio():
     audio_url = config["background"]["audio_url"]
     audio_name = config["background"]["audio_name"]
     audio_credit = config["background"]["audio_credit"]
-
-
+    
+ 
     # check if file exists
     if os.path.exists(f"assets/background/audio/{audio_credit}-{audio_name}.mp3"):
         print("Background audio already exists!")
