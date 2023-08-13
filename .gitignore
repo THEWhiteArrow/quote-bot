@@ -246,5 +246,6 @@ video_creation/data/envvars.txt
 config.toml
 temp
 quote_history.json
+**/__pycache__
 __pycache__/
  *.pyc
