@@ -58,7 +58,7 @@ def download_background_audio():
 
     
 
-def get_video_subclip(length:int=10, id:str=time()):
+def get_video_subclip(length:int=10, id:str=''):
     # load bg video
     video_name = config["background"]["video_name"]
     video_credit = config["background"]["video_credit"]
@@ -81,7 +81,7 @@ def get_video_subclip(length:int=10, id:str=time()):
 
     return filename
  
-def get_audio_subclip(length:int=10, id:str=time()):
+def get_audio_subclip(length:int=10, id:str=''):
     # load bg audio
     audio_name = config["background"]["audio_name"]
     audio_credit = config["background"]["audio_credit"]

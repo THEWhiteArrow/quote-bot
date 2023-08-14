@@ -13,14 +13,14 @@ def prepare_toml():
     if not exists_toml("./config.toml"):
         create_toml_config()
 
-def main():
+def main(clean_temp=True):
     prepare_toml()
 
     download_background_video()
     download_background_audio()
 
-    tts = TikTok()
     quotes = get_quotes()  
+    
     if len(quotes) == 0:
         print("No quotes found")
         return
@@ -28,6 +28,7 @@ def main():
         print(f"Found {len(quotes)} quotes:")
       
     for i,q in enumerate(quotes):
+        tts = TikTok()
         print(f"Processing quote {i+1}/{len(quotes)}")
         id=q.id
         quote=q.quote
@@ -44,14 +45,14 @@ def main():
         assemble_video(video_subclip_filename,audio_subclip_filename,tts_filename,quote,id)
 
     # remove temp folder
-    if os.path.exists("temp"):
+    if os.path.exists("temp") and clean_temp:
         shutil.rmtree("temp")
 
 
 
 
 if __name__ == "__main__": 
-    main()
+    main(False)
 
  
 
