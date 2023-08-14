@@ -1,0 +1,30 @@
+[app]
+status="prod"
+
+[quotes]
+min_length=100
+max_length=200
+
+[background]
+video_url="https://youtu.be/gUOg-9d2WAw"
+video_name="ORBEM TERRÆ - Earth rotation time-lapse compilation 4K"
+video_credit="Night Lights Films - Adrien Mauduit"
+audio_url="https://youtu.be/xFnvAsKJp4E"
+audio_name="sigma male playlist (motivational, workout music)"
+audio_credit="alonetrack"
+
+[settings.tts]
+voice_choice = "tiktok"
+random_voice = true
+elevenlabs_voice_name = "Bella"
+elevenlabs_api_key = ""
+aws_polly_voice = "Matthew"
+streamlabs_polly_voice = "Matthew"
+tiktok_voice = "en_male_narration"
+tiktok_sessionid = "<YOUR_TIKTOK_SESSIONID>"
+python_voice = "1"
+py_voice_num = "2"
+silence_duration = 0.3
+no_emojis = false
+
+ 
