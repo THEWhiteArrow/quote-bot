@@ -61,8 +61,8 @@ def assemble_video(
     tts = AudioFileClip(tts_filename)
 
     video_subclip = video_subclip.volumex(0)
-    audio_subclip = audio_subclip.volumex(0.17)
-    tts = tts.volumex(0.75).set_start(config["quotes"]["extra_duration"] / 2)
+    audio_subclip = audio_subclip.volumex(0.15)
+    tts = tts.volumex(0.85).set_start(config["quotes"]["extra_duration"] / 2)
 
     combined_audio = CompositeAudioClip([audio_subclip, tts])
 
