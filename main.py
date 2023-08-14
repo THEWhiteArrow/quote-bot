@@ -19,11 +19,16 @@ def main():
     download_background_video()
     download_background_audio()
 
-    quotes = get_quotes()  
-    
     tts = TikTok()
+    quotes = get_quotes()  
+    if len(quotes) == 0:
+        print("No quotes found")
+        return
+    else:
+        print(f"Found {len(quotes)} quotes:")
       
-    for q in quotes:
+    for i,q in enumerate(quotes):
+        print(f"Processing quote {i+1}/{len(quotes)}")
         id=q.timestamp
         quote=q.quote
         tts_filename=f"temp/tts-{id}.mp3"
