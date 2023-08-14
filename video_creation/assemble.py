@@ -19,50 +19,46 @@ def create_text_shadows(word, word_duration, word_start):
     shadow_color = shadows[R(0, len(shadows) - 1)]
     text_shadow_r = TextClip(
         word,
-        fontsize=155,
+        fontsize=145,
         color=shadow_color,
     )
     text_shadow_r = (
         text_shadow_r.set_duration(word_duration)
         .set_opacity(0.75)
         .set_start(word_start)
-        .set_position((3, 0))
     )
 
     text_shadow_l = TextClip(
         word,
-        fontsize=155,
+        fontsize=145,
         color=shadow_color,
     )
     text_shadow_l = (
         text_shadow_l.set_duration(word_duration)
         .set_opacity(0.75)
         .set_start(word_start)
-        .set_position((-3, 0))
     )
 
     text_shadow_d = TextClip(
         word,
-        fontsize=155,
+        fontsize=145,
         color=shadow_color,
     )
     text_shadow_d = (
         text_shadow_d.set_duration(word_duration)
         .set_opacity(0.75)
         .set_start(word_start)
-        .set_position((0, 3))
     )
 
     text_shadow_u = TextClip(
         word,
-        fontsize=155,
+        fontsize=145,
         color=shadow_color,
     )
     text_shadow_u = (
         text_shadow_u.set_duration(word_duration)
         .set_opacity(0.75)
         .set_start(word_start)
-        .set_position((0, -3))
     )
 
     ans = [text_shadow_r, text_shadow_l, text_shadow_d, text_shadow_u]
@@ -92,8 +88,7 @@ def assemble_video(
 
     video_subclip = video_subclip.volumex(0)
     audio_subclip = audio_subclip.volumex(0.2)
-    tts = tts.volumex(0.75)
-    tts.set_start(config["quotes"]["extra_duration"] / 2)
+    tts = tts.volumex(0.75).set_start(config["quotes"]["extra_duration"] / 2)
 
     combined_audio = CompositeAudioClip([audio_subclip, tts])
 
@@ -107,7 +102,6 @@ def assemble_video(
 
     text_clips = []
     word_start = 0
-
     for i, word in enumerate(words):
         word_duration = len(word) * letter_duration
         if i == 0:
@@ -115,22 +109,19 @@ def assemble_video(
 
         text_q = TextClip(
             word,
-            fontsize=150,
+            fontsize=140,
             color=colors[R(0, len(colors) - 1)],
             size=final_clip.size,
         )
         text_q = (
-            text_q.set_duration(word_duration)
-            .set_opacity(0.88)
-            .set_start(word_start)
-            .set_position((0, 0))
+            text_q.set_duration(word_duration).set_opacity(0.88).set_start(word_start)
         )
 
         text_shadows = []
         text_shadows = create_text_shadows(word, word_duration, word_start)
 
         # shadow first
-        text_clips.extend(text_shadows)
+        # text_clips.extend(text_shadows)
         text_clips.append(text_q)
 
         word_start += word_duration
@@ -184,6 +175,9 @@ def process_quotes(quotes, clean_temp):
         except Exception as e:
             print(f"Failed to process quote number {i+1}. Skipping...")
             print(f"Error: {e}")
+        except KeyboardInterrupt:
+            print("Keyboard interrupt detected. Exiting...")
+            break
 
     if os.path.exists("temp") and clean_temp:
         shutil.rmtree("temp")
