@@ -109,8 +109,6 @@ def assemble_video(
     word_start = 0
 
     for i, word in enumerate(words):
-        if len(word) == config["quotes"]["min_first_word_length"]:
-            raise Exception("First word is too short to display it nicely.")
         word_duration = len(word) * letter_duration
         if i == 0:
             word_duration += config["quotes"]["extra_duration"] / 2

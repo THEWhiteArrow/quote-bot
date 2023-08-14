@@ -29,6 +29,13 @@ def get_quotes():
             config["quotes"]["min_length"], config["quotes"]["max_length"]
         )
 
-        quotes = [q for q in quotes if not q in history["quotes"]]
+        quotes = [
+            q
+            for q in quotes
+            if (
+                not q in history["quotes"]
+                and q.quote.find(" ") >= config["quotes"]["min_first_word_length"]
+            )
+        ]
 
     return quotes
