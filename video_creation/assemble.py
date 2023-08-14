@@ -13,55 +13,29 @@ def R(min: int, max: int):
     return randint(min, max)
 
 
-def create_text_shadows(word, word_duration, word_start):
+def create_text_shadows(word, word_duration, word_start, size):
     shadows = ["gray10", "gray20", "gray30", "gray40"]
     ans = []
     shadow_color = shadows[R(0, len(shadows) - 1)]
-    text_shadow_r = TextClip(
-        word,
-        fontsize=145,
-        color=shadow_color,
-    )
-    text_shadow_r = (
-        text_shadow_r.set_duration(word_duration)
-        .set_opacity(0.75)
+
+    text_shadow = (
+        TextClip(
+            word,
+            fontsize=140,
+            color=shadow_color,
+            size=size,
+        )
+        .set_duration(word_duration)
+        .set_opacity(0.5)
         .set_start(word_start)
     )
 
-    text_shadow_l = TextClip(
-        word,
-        fontsize=145,
-        color=shadow_color,
-    )
-    text_shadow_l = (
-        text_shadow_l.set_duration(word_duration)
-        .set_opacity(0.75)
-        .set_start(word_start)
-    )
-
-    text_shadow_d = TextClip(
-        word,
-        fontsize=145,
-        color=shadow_color,
-    )
-    text_shadow_d = (
-        text_shadow_d.set_duration(word_duration)
-        .set_opacity(0.75)
-        .set_start(word_start)
-    )
-
-    text_shadow_u = TextClip(
-        word,
-        fontsize=145,
-        color=shadow_color,
-    )
-    text_shadow_u = (
-        text_shadow_u.set_duration(word_duration)
-        .set_opacity(0.75)
-        .set_start(word_start)
-    )
-
-    ans = [text_shadow_r, text_shadow_l, text_shadow_d, text_shadow_u]
+    ans = [
+        text_shadow.set_position((0, 3)),
+        text_shadow.set_position((0, -3)),
+        text_shadow.set_position((-3, 0)),
+        text_shadow.set_position((3, 0)),
+    ]
     return ans
 
 
@@ -87,7 +61,7 @@ def assemble_video(
     tts = AudioFileClip(tts_filename)
 
     video_subclip = video_subclip.volumex(0)
-    audio_subclip = audio_subclip.volumex(0.2)
+    audio_subclip = audio_subclip.volumex(0.17)
     tts = tts.volumex(0.75).set_start(config["quotes"]["extra_duration"] / 2)
 
     combined_audio = CompositeAudioClip([audio_subclip, tts])
@@ -118,10 +92,12 @@ def assemble_video(
         )
 
         text_shadows = []
-        text_shadows = create_text_shadows(word, word_duration, word_start)
+        text_shadows = create_text_shadows(
+            word, word_duration, word_start, final_clip.size
+        )
 
         # shadow first
-        # text_clips.extend(text_shadows)
+        text_clips.extend(text_shadows)
         text_clips.append(text_q)
 
         word_start += word_duration

@@ -25,9 +25,14 @@ def get_quotes():
             )
         ]
     else:
-        quotes = get_zenquotes(
-            config["quotes"]["min_length"], config["quotes"]["max_length"]
-        )
+        quotes = [
+            *get_zenquotes(
+                config["quotes"]["min_length"], config["quotes"]["max_length"]
+            ),
+            *get_zenquotes(
+                config["quotes"]["min_length"], config["quotes"]["max_length"]
+            ),
+        ]
 
         quotes = [
             q

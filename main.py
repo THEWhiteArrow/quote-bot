@@ -24,4 +24,4 @@ def main(clean_temp=True):
 
 
 if __name__ == "__main__":
-    main(False)
+    main(True)
