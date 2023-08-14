@@ -1,19 +1,20 @@
 import time
+from uuid import uuid4
 
 class Quote:
     quote : str = ""
     author : str = ""
-    timestamp : int = 0
+    id : int = 0
 
-    def __init__(self, quote, author, timestamp:int = int(time.time())):
+    def __init__(self, quote, author, id:str = str(uuid4()) ):
         self.quote = quote
         self.author = author
-        self.timestamp = timestamp
+        self.id = id
        
     def __eq__(self, other):
         if not isinstance(other, Quote):
             try:
-                other = Quote(other["quote"], other["author"], other["timestamp"])
+                other = Quote(other["quote"], other["author"], other["id"])
             except:
                 return False
             
@@ -24,13 +25,13 @@ class Quote:
         return {
             "quote": self.quote,
             "author": self.author,
-            "timestamp": self.timestamp
+            "id": self.id
         }
 
     def __json__(self):
         return {
             "quote": self.quote,
             "author": self.author,
-            "timestamp": self.timestamp
+            "id": self.id
         }
     

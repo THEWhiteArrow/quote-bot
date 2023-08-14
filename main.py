@@ -29,7 +29,7 @@ def main():
       
     for i,q in enumerate(quotes):
         print(f"Processing quote {i+1}/{len(quotes)}")
-        id=q.timestamp
+        id=q.id
         quote=q.quote
         tts_filename=f"temp/tts-{id}.mp3"
 
