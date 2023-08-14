@@ -1,12 +1,14 @@
 import shutil
 from moviepy.editor import *
 from gtts import gTTS as gtts
+from TTS.GTTS import GTTS
 from quotes.quotes_wrapper import get_quotes
 from utils.toml_helper import *
 from video_creation.background import *
 from utils.ffmpeg_install import *
 from TTS.TikTok import *
 from video_creation.assemble import *
+import pyttsx3
 
 def convert_video():
     clip = VideoFileClip("./goku.mp4")
@@ -36,6 +38,7 @@ def main():
     quotes = get_quotes()  
     
     tts = TikTok()
+      
     for q in quotes:
         id=q.timestamp
         quote=q.quote

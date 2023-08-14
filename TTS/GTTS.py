@@ -8,12 +8,12 @@ class GTTS:
         self.max_chars = 5000
         self.voices = []
 
-    def run(self, text, filepath):
+    def run(self, text, filepath,slow=False, random_voice=False):
         tts = gTTS(
             text=text,
             lang="en",
-            slow=False,
-        )
+            slow=slow,
+        ) 
         tts.save(filepath)
 
     def randomvoice(self):
