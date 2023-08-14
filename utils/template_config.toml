@@ -4,9 +4,10 @@ status="prod"
 [quotes]
 min_length=100
 max_length=200
+min_first_word_length=5
 
 [background]
-video_url="https://youtu.be/gUOg-9d2WAw"
+video_url="https://www.youtube.com/watch?v=gUOg-9d2WAw"
 video_name="ORBEM TERRÆ - Earth rotation time-lapse compilation 4K"
 video_credit="Night Lights Films - Adrien Mauduit"
 audio_url="https://youtu.be/xFnvAsKJp4E"

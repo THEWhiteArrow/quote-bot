@@ -8,7 +8,7 @@ from quotes.zenquotes import get_zenquotes
 
 def get_quotes():
     config = read_toml()
-    quote_history_filename = "./quote_history.json"
+    quote_history_filename = "history.json"
 
     if not exists_json(quote_history_filename) or invalid_json(quote_history_filename):
         print("Creating quote history file")
@@ -30,9 +30,5 @@ def get_quotes():
         )
 
         quotes = [q for q in quotes if not q in history["quotes"]]
-
-        history["quotes"] = [*history["quotes"], *[q.__dict__() for q in quotes]]
-
-        write_json(quote_history_filename, history)
 
     return quotes

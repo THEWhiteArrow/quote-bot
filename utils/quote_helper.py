@@ -1,4 +1,4 @@
-import time
+from utils.json_helper import *
 from uuid import uuid4
 
 
@@ -26,3 +26,13 @@ class Quote:
 
     def __json__(self):
         return {"quote": self.quote, "author": self.author, "id": self.id}
+
+
+def save_quote_to_history(q: Quote):
+    if invalid_json("history.json"):
+        write_json("history.json", {"quotes": []})
+
+    history = read_json("history.json")
+    history["quotes"].append(q.__dict__())
+
+    write_json("history.json", history)

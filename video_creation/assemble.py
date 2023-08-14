@@ -4,10 +4,69 @@ from moviepy.editor import *
 from random import randint
 from TTS.TikTok import *
 from video_creation.background import *
+from utils.quote_helper import *
+
+config = load_config()
 
 
 def R(min: int, max: int):
     return randint(min, max)
+
+
+def create_text_shadows(word, word_duration, word_start):
+    shadows = ["gray10", "gray20", "gray30", "gray40"]
+    ans = []
+    shadow_color = shadows[R(0, len(shadows) - 1)]
+    text_shadow_r = TextClip(
+        word,
+        fontsize=155,
+        color=shadow_color,
+    )
+    text_shadow_r = (
+        text_shadow_r.set_duration(word_duration)
+        .set_opacity(0.75)
+        .set_start(word_start)
+        .set_position((3, 0))
+    )
+
+    text_shadow_l = TextClip(
+        word,
+        fontsize=155,
+        color=shadow_color,
+    )
+    text_shadow_l = (
+        text_shadow_l.set_duration(word_duration)
+        .set_opacity(0.75)
+        .set_start(word_start)
+        .set_position((-3, 0))
+    )
+
+    text_shadow_d = TextClip(
+        word,
+        fontsize=155,
+        color=shadow_color,
+    )
+    text_shadow_d = (
+        text_shadow_d.set_duration(word_duration)
+        .set_opacity(0.75)
+        .set_start(word_start)
+        .set_position((0, 3))
+    )
+
+    text_shadow_u = TextClip(
+        word,
+        fontsize=155,
+        color=shadow_color,
+    )
+    text_shadow_u = (
+        text_shadow_u.set_duration(word_duration)
+        .set_opacity(0.75)
+        .set_start(word_start)
+        .set_position((0, -3))
+    )
+
+    ans = [text_shadow_r, text_shadow_l, text_shadow_d, text_shadow_u]
+    return ans
 
 
 def assemble_video(
@@ -34,6 +93,7 @@ def assemble_video(
     video_subclip = video_subclip.volumex(0)
     audio_subclip = audio_subclip.volumex(0.2)
     tts = tts.volumex(0.75)
+    tts.set_start(config["quotes"]["extra_duration"] / 2)
 
     combined_audio = CompositeAudioClip([audio_subclip, tts])
 
@@ -44,13 +104,16 @@ def assemble_video(
 
     letter_duration = duration / len(quote.replace(" ", "").replace("te", "t"))
     colors = ["white", "yellow"]
-    shadows = ["gray10", "gray20", "gray30", "gray40"]
 
     text_clips = []
     word_start = 0
 
     for i, word in enumerate(words):
+        if len(word) == config["quotes"]["min_first_word_length"]:
+            raise Exception("First word is too short to display it nicely.")
         word_duration = len(word) * letter_duration
+        if i == 0:
+            word_duration += config["quotes"]["extra_duration"] / 2
 
         text_q = TextClip(
             word,
@@ -65,21 +128,11 @@ def assemble_video(
             .set_position((0, 0))
         )
 
-        text_shadow = TextClip(
-            word,
-            fontsize=155,
-            color=shadows[R(0, len(shadows) - 1)],
-            size=final_clip.size,
-        )
-        text_shadow = (
-            text_shadow.set_duration(word_duration)
-            .set_opacity(0.75)
-            .set_start(word_start)
-            .set_position((0, 3))
-        )
+        text_shadows = []
+        text_shadows = create_text_shadows(word, word_duration, word_start)
 
         # shadow first
-        text_clips.append(text_shadow)
+        text_clips.extend(text_shadows)
         text_clips.append(text_q)
 
         word_start += word_duration
@@ -121,6 +174,7 @@ def process_quotes(quotes, clean_temp):
                 random_voice=config["settings"]["tts"]["random_voice"],
             )
             duration = AudioFileClip(tts_filename).duration
+            duration += config["quotes"]["extra_duration"]
             video_subclip_filename = get_video_subclip(duration, id)
             audio_subclip_filename = get_audio_subclip(duration, id)
 
@@ -128,8 +182,10 @@ def process_quotes(quotes, clean_temp):
                 video_subclip_filename, audio_subclip_filename, tts_filename, quote, id
             )
 
-        except:
+            save_quote_to_history(q)
+        except Exception as e:
             print(f"Failed to process quote number {i+1}. Skipping...")
+            print(f"Error: {e}")
 
     if os.path.exists("temp") and clean_temp:
         shutil.rmtree("temp")
