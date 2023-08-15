@@ -1,5 +1,6 @@
 from multiprocessing import cpu_count
 import shutil
+from typing import List
 from moviepy.editor import *
 from random import randint
 from TTS.TikTok import *
@@ -13,7 +14,9 @@ def R(min: int, max: int):
     return randint(min, max)
 
 
-def create_text_shadows(word, word_duration, word_start, size):
+def create_text_shadows(
+    word, word_duration, word_start, size, font_size: int = 140
+) -> List[TextClip]:
     shadows = ["gray10", "gray20", "gray30", "gray40"]
     ans = []
     shadow_color = shadows[R(0, len(shadows) - 1)]
@@ -21,7 +24,7 @@ def create_text_shadows(word, word_duration, word_start, size):
     text_shadow = (
         TextClip(
             word,
-            fontsize=140,
+            fontsize=font_size,
             color=shadow_color,
             size=size,
         )
@@ -39,13 +42,9 @@ def create_text_shadows(word, word_duration, word_start, size):
     return ans
 
 
-def assemble_video(
-    video_subclip_filename: str,
-    audio_subclip_filename: str,
-    tts_filename: str,
-    quote: str,
-    id: int,
-):
+def merge_subclips_and_tts(
+    video_subclip_filename, audio_subclip_filename, tts_filename
+) -> CompositeVideoClip:
     h = 1920
     w = 1080
 
@@ -67,8 +66,10 @@ def assemble_video(
     combined_audio = CompositeAudioClip([audio_subclip, tts])
 
     final_clip = video_subclip.set_audio(combined_audio)
+    return final_clip
 
-    duration = final_clip.duration
+
+def merge_text_clips_by_word(quote, id, duration, size) -> List[TextClip]:
     words = quote.split(" ")
 
     letter_duration = duration / len(quote.replace(" ", "").replace("te", "t"))
@@ -85,16 +86,14 @@ def assemble_video(
             word,
             fontsize=140,
             color=colors[R(0, len(colors) - 1)],
-            size=final_clip.size,
+            size=size,
         )
         text_q = (
             text_q.set_duration(word_duration).set_opacity(0.88).set_start(word_start)
         )
 
         text_shadows = []
-        text_shadows = create_text_shadows(
-            word, word_duration, word_start, final_clip.size
-        )
+        text_shadows = create_text_shadows(word, word_duration, word_start, size)
 
         # shadow first
         text_clips.extend(text_shadows)
@@ -102,8 +101,64 @@ def assemble_video(
 
         word_start += word_duration
 
-    final_clip = CompositeVideoClip([final_clip, *text_clips])
+    return text_clips
 
+
+def merge_text_clips_by_pharse(quote, id, duration, size) -> List[TextClip]:
+    words = quote.split(" ")
+
+    quote_len = len(quote)
+    words_len = len(words)
+    avg_word_len = quote_len / words_len
+
+    letter_duration = duration / len(quote.replace(" ", "").replace("te", "t"))
+    colors = ["white", "yellow"]
+
+    text_clips = []
+    word_start = 0
+
+    pharse = ""
+    first_pharse = True
+    fontsize = 90
+    for i, word in enumerate(words):
+        if len(pharse) < 1.5 * avg_word_len and i + 1 != len(words):
+            pharse += word + " "
+            continue
+        else:
+            pharse += word
+            word_duration = len(pharse.replace(" ", "")) * letter_duration
+            if first_pharse:
+                word_duration += config["quotes"]["extra_duration"] / 2
+                first_pharse = False
+
+            text_q = (
+                TextClip(
+                    pharse,
+                    fontsize=fontsize,
+                    color=colors[R(0, len(colors) - 1)],
+                    size=size,
+                )
+                .set_duration(word_duration)
+                .set_opacity(0.88)
+                .set_start(word_start)
+            )
+
+            text_shadows = []
+            text_shadows = create_text_shadows(
+                pharse, word_duration, word_start, size, font_size=fontsize
+            )
+
+            # shadow first
+            text_clips.extend(text_shadows)
+            text_clips.append(text_q)
+
+            word_start += word_duration
+            pharse = ""
+
+    return text_clips
+
+
+def save_result(final_clip: CompositeVideoClip, id: str) -> None:
     if not os.path.exists("results"):
         os.mkdir("results")
 
@@ -112,10 +167,30 @@ def assemble_video(
         final_filename, threads=cpu_count(), verbose=False, fps=24
     )
 
+
+def assemble_video(
+    video_subclip_filename: str,
+    audio_subclip_filename: str,
+    tts_filename: str,
+    quote: str,
+    id: int,
+) -> None:
+    final_clip = merge_subclips_and_tts(
+        video_subclip_filename, audio_subclip_filename, tts_filename
+    )
+
+    text_clips = merge_text_clips_by_pharse(
+        quote, id, final_clip.duration, final_clip.size
+    )
+
+    final_clip = CompositeVideoClip([final_clip, *text_clips])
+
+    save_result(final_clip, id)
+
     print("Finished assembling video!!!")
 
 
-def process_quotes(quotes, clean_temp):
+def process_quotes(quotes, clean_temp) -> None:
     if len(quotes) == 0:
         print("No quotes found")
         return
